@@ -1,0 +1,250 @@
+/* ================================================================
+   HeroSection.module.css
+
+   Layer stack (bottom → top):
+     1. bgImage      — sharp hero.jpeg, full viewport, object-fit:cover
+     2. frostLayer   — blurred hero + light skin-coloured wash
+     3. doorWindow   — door-shaped (rect + semicircle top) overflow:hidden
+                       containing a viewport-sized sharp image (doorImagePin)
+     4. sideText     — text flanking the door, drifts up on scroll
+   ================================================================ */
+
+/* ── Hero section — exactly 100vh, GSAP pins it ──────────────── */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #c9b69e; /* fallback while image loads */
+}
+
+/* ================================================================
+   LAYER 1 — Sharp background (normal, no zoom)
+   ================================================================ */
+.bgImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  z-index: 0;
+  user-select: none;
+  pointer-events: none;
+  will-change: transform;
+  transform-origin: center center;
+}
+
+/* ================================================================
+   LAYER 2 — Frost overlay
+   Blurred copy of the hero image + a light skin-coloured overlay.
+   This creates the warm, frosted look that the door cuts through.
+   ================================================================ */
+.frostLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.frostImage {
+  position: absolute;
+  inset: -20px;             /* extend past edges so blur doesn't show blanks */
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  filter: blur(20px) saturate(0.7) brightness(0.92);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Light skin coloured wash on top of the blur */
+.frostColor {
+  position: absolute;
+  inset: 0;
+  background: rgba(214, 196, 174, 0.45);
+}
+
+/* ================================================================
+   LAYER 3 — Door window (the expanding reveal)
+
+   Shape: rectangle with a perfect semicircle on top = a door / arch.
+   border-radius: 999px 999px 0 0  →  when width < height the top
+   becomes a semicircle; as it grows wider it stays rounded until
+   GSAP animates the radius to 0.
+
+   doorImagePin: always 100vw × 100vh, anchored at bottom-centre.
+   This guarantees the sharp image lines up pixel-perfectly with
+   the background — the door's overflow:hidden simply clips the
+   door shape out of the full image.
+   ================================================================ */
+.doorWindow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  /* GSAP sets: xPercent:-50, width, height */
+  /* Initial dimensions via gsap.set() in component: 34% wide, 60% tall */
+  border-radius: 999px 999px 0 0;
+  overflow: hidden;
+  z-index: 2;
+  will-change: width, height, border-radius;
+}
+
+.doorImagePin {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.doorImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ================================================================
+   LAYER 4 — Side text
+   ================================================================ */
+.sideText {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 210px;
+  z-index: 5;
+  will-change: transform;
+}
+
+.left {
+  left: 5.5%;
+  text-align: center;
+}
+
+.right {
+  right: 5.5%;
+  text-align: center;
+}
+
+.sideTextBody {
+  font-family: 'Cormorant Garamond', serif;
+  font-optical-sizing: auto;
+  font-size: 0.73rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.85;
+  color: #1e1006;
+}
+
+/* ================================================================
+   NAVBAR  (absolute inside hero — since hero is pinned,
+            it behaves like fixed during the scroll animation)
+   ================================================================ */
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 34px;
+  pointer-events: none;
+}
+
+.navBrand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  pointer-events: all;
+  cursor: default;
+}
+
+.brandAurelia {
+  font-family: 'Alex Brush', cursive;
+  font-size: 2.8rem;
+  color: #140c01;
+  line-height: 0.94;
+  letter-spacing: 0.01em;
+  display: block;
+}
+
+.brandInteriors {
+  font-family: 'Cormorant Garamond', serif;
+  font-optical-sizing: auto;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: #3c2914;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── Menu button ─────────────────────────────────────────────── */
+.menuBtn {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  background: rgba(236, 224, 206, 0.45);
+  border: 1px solid rgba(150, 118, 78, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 5px;
+  padding: 10px 20px;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  pointer-events: all;
+}
+
+.menuBtn:hover {
+  background: rgba(236, 224, 206, 0.8);
+  border-color: rgba(150, 118, 78, 0.6);
+  box-shadow: 0 2px 18px rgba(140, 110, 70, 0.14);
+}
+
+.menuLines {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menuLine {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: #140c01;
+  border-radius: 1px;
+  transition: transform 0.3s;
+}
+
+.menuBtn:hover .menuLine:first-child {
+  transform: scaleX(0.72);
+  transform-origin: left;
+}
+
+.menuBtn:hover .menuLine:last-child {
+  transform: scaleX(0.72);
+  transform-origin: right;
+}
+
+.menuLabel {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  color: #140c01;
+  text-transform: uppercase;
+}
