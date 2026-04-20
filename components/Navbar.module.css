@@ -1,0 +1,101 @@
+/* ================================================================
+   NAVBAR  (fixed globally to be visible across all sections)
+   ================================================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 34px;
+  pointer-events: none;
+}
+
+.navBrand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  pointer-events: all;
+  cursor: default;
+}
+
+.brandAurelia {
+  font-family: 'Alex Brush', cursive;
+  font-size: 2.8rem;
+  color: #140c01;
+  line-height: 0.94;
+  letter-spacing: 0.01em;
+  display: block;
+}
+
+.brandInteriors {
+  font-family: 'Cormorant Garamond', serif;
+  font-optical-sizing: auto;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: #3c2914;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── Menu button ─────────────────────────────────────────────── */
+.menuBtn {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  background: rgba(236, 224, 206, 0.45);
+  border: 1px solid rgba(150, 118, 78, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 5px;
+  padding: 10px 50px;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  pointer-events: all;
+}
+
+.menuBtn:hover {
+  background: rgba(236, 224, 206, 0.8);
+  border-color: rgba(150, 118, 78, 0.6);
+  box-shadow: 0 2px 18px rgba(140, 110, 70, 0.14);
+}
+
+.menuLines {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menuLine {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: #140c01;
+  border-radius: 1px;
+  transition: transform 0.3s;
+}
+
+.menuBtn:hover .menuLine:first-child {
+  transform: scaleX(0.72);
+  transform-origin: left;
+}
+
+.menuBtn:hover .menuLine:last-child {
+  transform: scaleX(0.72);
+  transform-origin: right;
+}
+
+.menuLabel {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  color: #140c01;
+  text-transform: uppercase;
+}

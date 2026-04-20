@@ -9,13 +9,25 @@
      4. sideText     — text flanking the door, drifts up on scroll
    ================================================================ */
 
-/* ── Hero section — exactly 100vh, GSAP pins it ──────────────── */
-.hero {
+/* ── Spacer — sits in normal flow, provides scroll height ─────── */
+.heroSpacer {
   position: relative;
+  width: 100%;
+  /* 100vh for the hero + 1500px scroll distance for the door anim */
+  height: calc(100vh + 1500px);
+}
+
+/* ── Hero section — fixed at viewport top, z-index 1 ─────────── */
+.hero {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background: #c9b69e; /* fallback while image loads */
+  background: #c9b69e;
+  z-index: 1;
+  /* fallback while image loads */
 }
 
 /* ================================================================
@@ -27,13 +39,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  /* Centre the crop slightly above middle for a more composed look */
+  object-position: center 40%;
   display: block;
   z-index: 0;
   user-select: none;
   pointer-events: none;
-  will-change: transform;
-  transform-origin: center center;
+  /* Very subtle boost to perceived sharpness */
+  filter: contrast(1.04) saturate(1.08);
 }
 
 /* ================================================================
@@ -50,7 +63,8 @@
 
 .frostImage {
   position: absolute;
-  inset: -20px;             /* extend past edges so blur doesn't show blanks */
+  inset: -20px;
+  /* extend past edges so blur doesn't show blanks */
   width: calc(100% + 40px);
   height: calc(100% + 40px);
   object-fit: cover;
@@ -65,7 +79,8 @@
 .frostColor {
   position: absolute;
   inset: 0;
-  background: rgba(214, 196, 174, 0.45);
+  /* Light warm skin tone — creamy beige-peach */
+  background: rgba(220, 202, 180, 0.52);
 }
 
 /* ================================================================
@@ -115,32 +130,40 @@
 
 /* ================================================================
    LAYER 4 — Side text
+   Raleway font, positioned right beside the arch door edges.
+   The arch starts at 30% wide (15% each side from center 50%):
+     left edge  = 50% - 15% = 35%
+     right edge = 50% + 15% = 65%
+   Text sits flush against these edges with a small gap.
+   No CSS transform here — GSAP owns yPercent + y + scale.
    ================================================================ */
 .sideText {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 210px;
+  /* 62% pushes text into the lower half — beside the door body */
+  top: 62%;
+  width: 300px;
   z-index: 5;
   will-change: transform;
 }
 
 .left {
-  left: 5.5%;
-  text-align: center;
+  /* right edge of text block sits at the left edge of the arch */
+  right: calc(50% + 16%);
+  text-align: right;
 }
 
 .right {
-  right: 5.5%;
-  text-align: center;
+  /* left edge of text block sits at the right edge of the arch */
+  left: calc(50% + 16%);
+  text-align: left;
 }
 
 .sideTextBody {
   font-family: 'Cormorant Garamond', serif;
   font-optical-sizing: auto;
-  font-size: 0.73rem;
+  font-size: 0.95rem;
   font-weight: 400;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   line-height: 1.85;
   color: #1e1006;
@@ -203,7 +226,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 5px;
-  padding: 10px 20px;
+  padding: 10px 50px;
   transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
   outline: none;
   pointer-events: all;

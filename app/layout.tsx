@@ -7,6 +7,8 @@ export const metadata: Metadata = {
     "Minimal, modern, and meaningful interiors. Designed to feel as good as they look. Aurelia Interiors turns your vision into a living experience.",
 };
 
+import Navbar from "@/components/Navbar";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +24,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
