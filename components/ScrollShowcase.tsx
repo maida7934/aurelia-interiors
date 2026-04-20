@@ -33,6 +33,7 @@ export default function ScrollShowcase() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const centerRef = useRef<HTMLDivElement>(null);
   const designTextRef = useRef<HTMLDivElement>(null);
+  const creamBottomRef = useRef<HTMLDivElement>(null);
   const satelliteRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -40,15 +41,17 @@ export default function ScrollShowcase() {
       /* ============================================================
          Master timeline — pinned, scroll-scrubbed
          ============================================================
-         The canvas is pinned at viewport top.
-         Total scroll runway = 250vh.
-         scrub: 1.5 for smooth, slightly lagged coupling.
+         Two-phase animation:
+           Phase 1 (0 → 0.45): Container EXPANDS to fill viewport
+           Phase 2 (0.55 → 1.0): Container SHRINKS into an arch doorway
+         
+         Scroll runway = 400vh for both phases.
          ============================================================ */
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: wrapperRef.current,
           start: "top top",
-          end: "+=250%",
+          end: "+=400%",
           pin: canvasRef.current,
           scrub: 1.5,
           anticipatePin: 1,
@@ -56,90 +59,72 @@ export default function ScrollShowcase() {
       });
 
       /* ============================================================
-         CENTER CONTAINER — mask expansion (NOT image scaling)
+         PHASE 1 — Container mask expansion (0 → 0.45)
          ============================================================
-         The image inside is always full-viewport-sized.
-         We expand the CONTAINER from its initial 46%×35%
-         to nearly fill the viewport (with 8px margin all sides).
-         overflow: hidden on the container = masking.
-         
-         This creates the "image unfolding/expanding" illusion
-         without any scaling distortion.
+         The container grows from 46%×35% → nearly fullscreen.
+         The image inside is already full-viewport-sized,
+         so expanding the container simply reveals more of it.
          ============================================================ */
       tl.to(
         centerRef.current,
         {
-          width: "calc(100% - 16px)",
-          height: "calc(100% - 16px)",
+          width: "calc(100% - 48px)",
+          height: "calc(100% - 48px)",
           borderRadius: "4px",
           ease: "power2.inOut",
-          duration: 1,
+          duration: 0.45,
         },
         0
       );
 
-      /* ============================================================
-         SATELLITE IMAGES — push outward as container claims space
-         ============================================================
-         Each satellite translates in its own direction at its own
-         speed, creating parallax depth. They begin moving BEFORE
-         the container reaches them, so there's never overlap.
-         Fade out during the second half of the scroll.
-         ============================================================ */
+      /* ── Satellite images: push outward during Phase 1 ──────── */
       SATELLITES.forEach((sat, i) => {
         const el = satelliteRefs.current[i];
         if (!el) return;
 
-        // Push outward
         tl.to(
           el,
           {
             x: `${sat.tx * sat.speed}%`,
             y: `${sat.ty * sat.speed}%`,
             ease: "power1.in",
-            duration: 1,
+            duration: 0.45,
           },
           0
         );
 
-        // Fade out in the second half
         tl.to(
           el,
           {
             opacity: 0,
             ease: "power2.in",
-            duration: 0.4,
+            duration: 0.2,
           },
-          0.5
+          0.25
         );
       });
 
-      /* ============================================================
-         "DESIGN YOUR SPACE" TEXT — pushes upward and fades away
-         ============================================================
-         Same parallax treatment as the satellites:
-         moves up and away as the center container expands beneath it.
-         ============================================================ */
+      /* ── "Design your space" text: push up and away ─────────── */
       tl.to(
         designTextRef.current,
         {
           y: "-180%",
           opacity: 0,
           ease: "power1.in",
-          duration: 0.7,
+          duration: 0.35,
         },
         0
       );
 
-      /* ── Center overlay text: fade out early in scroll ──────── */
+      /* ── Center overlay text: fade out early ───────────────── */
       tl.to(
         `.${styles.centerOverlay}`,
         {
           opacity: 0,
           ease: "power2.in",
-          duration: 0.3,
+          duration: 0.15,
         },
-        0.15
+        0.08
       );
 
       /* ── Project counter: fade out ─────────────────────────── */
@@ -148,9 +133,9 @@ export default function ScrollShowcase() {
         {
           opacity: 0,
           ease: "power2.in",
-          duration: 0.3,
+          duration: 0.15,
         },
-        0.2
+        0.1
       );
 
       /* ── Bottom tagline: fade out ──────────────────────────── */
@@ -160,10 +145,87 @@ export default function ScrollShowcase() {
           opacity: 0,
           y: 40,
           ease: "power2.in",
-          duration: 0.3,
+          duration: 0.15,
         },
-        0.3
+        0.15
       );
+
+      /* ============================================================
+         PHASE 2 — Arch morph (0.55 → 1.0)
+         ============================================================
+         After the image is fully revealed, the container:
+           1. Shrinks to a small arch shape
+           2. Moves slightly above center
+           3. Morphs border-radius into arch (round top, flat bottom)
+         
+         Below the arch, the cream site background reveals,
+         creating the transition into the next section.
+         ============================================================ */
+      tl.to(
+        centerRef.current,
+        {
+          width: "18%",
+          height: "42%",
+          top: "40%",
+          borderRadius: "999px 999px 0 0",
+          ease: "power2.inOut",
+          duration: 0.45,
+        },
+        0.55
+      );
+
+      /* ── Cream bottom panel: reveals site background below arch ── */
+      tl.fromTo(
+        creamBottomRef.current,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          ease: "power2.inOut",
+          duration: 0.35,
+        },
+        0.6
+      );
+
+      /* ============================================================
+         Navbar Color Swap
+         ============================================================ */
+      ScrollTrigger.create({
+        trigger: wrapperRef.current,
+        start: "top 20%",
+        end: "bottom top",
+        onEnter: () => {
+          const root = document.documentElement.style;
+          root.setProperty("--nav-color", "#f1eade");
+          root.setProperty("--nav-color-alt", "#f1eade");
+          root.setProperty("--nav-btn-bg", "rgba(255, 255, 255, 0.1)");
+          root.setProperty("--nav-btn-border", "rgba(255, 255, 255, 0.2)");
+          root.setProperty("--nav-bg", "linear-gradient(to bottom, rgba(20, 17, 14, 0.35) 0%, rgba(20, 17, 14, 0.1) 60%, transparent 100%)");
+        },
+        onLeaveBack: () => {
+          const root = document.documentElement.style;
+          root.removeProperty("--nav-color");
+          root.removeProperty("--nav-color-alt");
+          root.removeProperty("--nav-btn-bg");
+          root.removeProperty("--nav-btn-border");
+          root.removeProperty("--nav-bg");
+        },
+        onEnterBack: () => {
+          const root = document.documentElement.style;
+          root.setProperty("--nav-color", "#f1eade");
+          root.setProperty("--nav-color-alt", "#f1eade");
+          root.setProperty("--nav-btn-bg", "rgba(255, 255, 255, 0.1)");
+          root.setProperty("--nav-btn-border", "rgba(255, 255, 255, 0.2)");
+          root.setProperty("--nav-bg", "linear-gradient(to bottom, rgba(20, 17, 14, 0.35) 0%, rgba(20, 17, 14, 0.1) 60%, transparent 100%)");
+        },
+        onLeave: () => {
+          const root = document.documentElement.style;
+          root.removeProperty("--nav-color");
+          root.removeProperty("--nav-color-alt");
+          root.removeProperty("--nav-btn-bg");
+          root.removeProperty("--nav-btn-border");
+          root.removeProperty("--nav-bg");
+        },
+      });
 
     }, wrapperRef);
 
@@ -201,7 +263,8 @@ export default function ScrollShowcase() {
 
         {/* ── "Design your space" text ────────────────────────── */}
         <div ref={designTextRef} className={styles.designText}>
-          Design your space
+          <span className={styles.designWord}>Design</span><br />
+          <span className={styles.yourSpaceWord}>your space</span>
         </div>
 
         {/* ── Satellite images ───────────────────────────────── */}
@@ -221,6 +284,9 @@ export default function ScrollShowcase() {
 
         {/* ── Bottom tagline ─────────────────────────────────── */}
         <span className={styles.bottomTagline}>Imagine Possible</span>
+
+        {/* ── Cream bottom panel — site bg below arch ────────── */}
+        <div ref={creamBottomRef} className={styles.creamBottom} aria-hidden="true" />
       </div>
     </div>
   );

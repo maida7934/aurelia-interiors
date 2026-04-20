@@ -10,14 +10,15 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 22px 34px 50px 34px; /* increased bottom padding to let the gradient fade out cleanly */
-  background: linear-gradient(
+  padding: 22px 34px 50px 34px;
+  background: var(--nav-bg, linear-gradient(
     to bottom,
     rgba(60, 41, 20, 0.25) 0%,
     rgba(60, 41, 20, 0.08) 60%,
     rgba(60, 41, 20, 0) 100%
-  );
+  ));
   pointer-events: none;
+  transition: background 0.5s ease;
 }
 
 .navBrand {
@@ -31,10 +32,11 @@
 .brandAurelia {
   font-family: 'Alex Brush', cursive;
   font-size: 2.8rem;
-  color: #140c01;
+  color: var(--nav-color, #140c01);
   line-height: 0.94;
   letter-spacing: 0.01em;
   display: block;
+  transition: color 0.5s ease;
 }
 
 .brandInteriors {
@@ -44,9 +46,10 @@
   font-weight: 400;
   letter-spacing: 0.36em;
   text-transform: uppercase;
-  color: #3c2914;
+  color: var(--nav-color-alt, #3c2914);
   margin-top: 4px;
   display: block;
+  transition: color 0.5s ease;
 }
 
 /* ── Menu button ─────────────────────────────────────────────── */
@@ -55,13 +58,13 @@
   align-items: center;
   gap: 11px;
   cursor: pointer;
-  background: rgba(236, 224, 206, 0.45);
-  border: 1px solid rgba(150, 118, 78, 0.3);
+  background: var(--nav-btn-bg, rgba(236, 224, 206, 0.45));
+  border: 1px solid var(--nav-btn-border, rgba(150, 118, 78, 0.3));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 5px;
   padding: 10px 50px;
-  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.3s;
   outline: none;
   pointer-events: all;
 }
@@ -82,9 +85,9 @@
   display: block;
   width: 20px;
   height: 1.5px;
-  background: #140c01;
+  background: var(--nav-color, #140c01);
   border-radius: 1px;
-  transition: transform 0.3s;
+  transition: transform 0.3s, background 0.5s ease;
 }
 
 .menuBtn:hover .menuLine:first-child {
@@ -102,6 +105,7 @@
   font-size: 0.68rem;
   font-weight: 500;
   letter-spacing: 0.24em;
-  color: #140c01;
+  color: var(--nav-color, #140c01);
   text-transform: uppercase;
+  transition: color 0.5s ease;
 }

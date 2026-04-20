@@ -51,7 +51,7 @@
    CENTER CONTAINER — the expanding mask/window
 
    starts:  46% × 35%  (small cropped window)
-   ends:    calc(100% - 16px) × calc(100% - 16px)  (nearly fullscreen)
+   ends:    calc(100% - 48px) × calc(100% - 48px)  (nearly fullscreen)
 
    GSAP animates width + height.
    The image inside is ALWAYS viewport-sized — only the
@@ -81,8 +81,8 @@
   top: 50%;
   transform: translate(-50%, -50%);
   /* Match the final expanded size: viewport minus margin */
-  width: calc(100vw - 16px);
-  height: calc(100vh - 16px);
+  width: calc(100vw - 48px);
+  height: calc(100vh - 48px);
   object-fit: cover;
   display: block;
   user-select: none;
@@ -192,21 +192,37 @@
 }
 
 /* ================================================================
-   "Design your space" — floats above center, beside smallTR
-   Has will-change for GSAP animation (pushes up and away)
+   DESIGN TEXT — "Design your space"
    ================================================================ */
 .designText {
   position: absolute;
-  top: 15%;
+  top: 7%;
   right: 42%;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 3.5vw, 3.5rem);
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.9);
+  color: #dbcdbb;
   line-height: 1.1;
   text-align: right;
   z-index: 5;
   will-change: transform, opacity;
+}
+
+.designWord {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.yourSpaceWord {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(3.5rem, 4vw, 6rem);
+  font-weight: 200;
+  display: block;
+  margin-top: -15px;
+  font-style: italic;
+  /* Pull them tighter together */
+  margin-right: -10px;
+  /* Slight offset for cursive flow */
 }
 
 /* ================================================================
