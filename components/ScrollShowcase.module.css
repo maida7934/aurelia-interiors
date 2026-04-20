@@ -1,0 +1,291 @@
+/* ================================================================
+   ScrollShowcase.module.css
+
+   Scroll-driven CONTAINER EXPANSION section.
+   
+   The key trick:
+     – The center IMAGE is always full-viewport-sized
+     – The center CONTAINER starts small (a cropped window)
+     – On scroll the CONTAINER grows → revealing more of the image
+     – No scaling / no pixel distortion — pure mask expansion
+     – Satellite images move outward as the container claims space
+   ================================================================ */
+
+/* ── Wrapper — provides the scroll runway for pin ─────────────── */
+.wrapper {
+  position: relative;
+  width: 100%;
+  background: #1a1714;
+  z-index: 20;
+}
+
+/* ── Pinned canvas — viewport-sized, GSAP pins this ──────────── */
+.canvas {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ================================================================
+   IMAGE CARDS — shared base style (satellites only)
+   ================================================================ */
+.imgCard {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 6px;
+  will-change: transform, opacity;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
+}
+
+.imgCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ================================================================
+   CENTER CONTAINER — the expanding mask/window
+
+   starts:  46% × 35%  (small cropped window)
+   ends:    calc(100% - 16px) × calc(100% - 16px)  (nearly fullscreen)
+
+   GSAP animates width + height.
+   The image inside is ALWAYS viewport-sized — only the
+   overflow: hidden container decides how much you see.
+   ================================================================ */
+.centerCard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 46%;
+  height: 35%;
+  z-index: 10;
+  border-radius: 8px;
+  box-shadow: 0 8px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  will-change: width, height, border-radius;
+}
+
+/* The full-size image pinned inside the container.
+   Always sized to the FINAL expanded dimensions so there's
+   never any scaling — only more/less is visible. */
+.centerImage {
+  position: absolute;
+  /* Centre the image within the expanding container */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* Match the final expanded size: viewport minus margin */
+  width: calc(100vw - 16px);
+  height: calc(100vh - 16px);
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Text overlay on center image */
+.centerOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.centerTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+.centerNav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 1rem;
+  pointer-events: all;
+}
+
+.navArrow {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(20, 12, 1, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.2rem;
+}
+
+.navArrow:hover {
+  background: rgba(20, 12, 1, 0.85);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* ================================================================
+   SATELLITE POSITIONS
+   All positions relative to .canvas (100vw × 100vh).
+   ================================================================ */
+
+/* ── Left column ─────────────────────────────────────────────── */
+.left1 {
+  left: 1.5%;
+  top: 20%;
+  width: 24%;
+  height: 33%;
+}
+
+.left2 {
+  left: 1.5%;
+  top: 58%;
+  width: 24%;
+  height: 22%;
+}
+
+/* ── Right column ────────────────────────────────────────────── */
+.smallTR {
+  right: 27%;
+  top: 13%;
+  width: 12%;
+  height: 16%;
+}
+
+.right1 {
+  right: 2%;
+  top: 22%;
+  width: 22%;
+  height: 28%;
+}
+
+.right2 {
+  right: 2%;
+  top: 54%;
+  width: 22%;
+  height: 35%;
+}
+
+/* ── Bottom center ───────────────────────────────────────────── */
+.bottomCenter {
+  left: 40%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  width: 25%;
+  height: 24%;
+}
+
+/* ================================================================
+   "Design your space" — floats above center, beside smallTR
+   Has will-change for GSAP animation (pushes up and away)
+   ================================================================ */
+.designText {
+  position: absolute;
+  top: 15%;
+  right: 42%;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.1;
+  text-align: right;
+  z-index: 5;
+  will-change: transform, opacity;
+}
+
+/* ================================================================
+   BOTTOM TEXT — "IMAGINE POSSIBLE" style tagline
+   ================================================================ */
+.bottomTagline {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  z-index: 5;
+  white-space: nowrap;
+}
+
+/* ================================================================
+   COUNTER — "27" style number on the right edge of center
+   ================================================================ */
+.projectCounter {
+  position: absolute;
+  right: -3rem;
+  bottom: 0.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.05em;
+  z-index: 3;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 1024px) {
+  .centerCard {
+    width: 55%;
+    height: 50%;
+  }
+
+  .left1,
+  .left2 {
+    width: 20%;
+  }
+
+  .right1,
+  .right2 {
+    width: 24%;
+  }
+}
+
+@media (max-width: 768px) {
+  .centerCard {
+    width: 70%;
+    height: 45%;
+  }
+
+  .smallTR,
+  .bottomCenter {
+    display: none;
+  }
+
+  .left1,
+  .left2 {
+    width: 22%;
+  }
+
+  .right1,
+  .right2 {
+    width: 26%;
+  }
+
+  .navArrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+}

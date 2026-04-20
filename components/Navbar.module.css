@@ -10,7 +10,13 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 22px 34px;
+  padding: 22px 34px 50px 34px; /* increased bottom padding to let the gradient fade out cleanly */
+  background: linear-gradient(
+    to bottom,
+    rgba(60, 41, 20, 0.25) 0%,
+    rgba(60, 41, 20, 0.08) 60%,
+    rgba(60, 41, 20, 0) 100%
+  );
   pointer-events: none;
 }
 

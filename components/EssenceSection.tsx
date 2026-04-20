@@ -27,7 +27,6 @@ export default function EssenceSection() {
   const creamCurtainRef = useRef<HTMLDivElement>(null);
   const sceneRef        = useRef<HTMLDivElement>(null);
   const charRefs        = useRef<(HTMLSpanElement | null)[]>([]);
-  const dividerRef      = useRef<HTMLDivElement>(null);
   const line1Ref        = useRef<HTMLParagraphElement>(null);
   const line2Ref        = useRef<HTMLParagraphElement>(null);
   const line3Ref        = useRef<HTMLParagraphElement>(null);
@@ -113,43 +112,27 @@ export default function EssenceSection() {
       const contentTl = gsap.timeline({
         scrollTrigger: {
           trigger: sceneRef.current,
-          start: "top 75%",
-          end: "top 15%",
-          scrub: 2,              // slower, smoother scrub
+          start: "top 45%",       // delays the start so it happens after ESSENCE finishes building (at 50%)
+          end: "top -40%",        // stretches the animation duration so it happens while the text is fully visible
+          scrub: 2,
         },
       });
 
-      // Divider — scales in from centre
-      contentTl.fromTo(
-        dividerRef.current,
-        { scaleX: 0, opacity: 0 },
-        { scaleX: 1, opacity: 1, ease: "power2.out", duration: 0.3 },
-        0
-      );
+      // Helper to animate words inside a line container
+      const animateWords = (container: HTMLElement | null, startTime: number) => {
+        if (!container) return;
+        const words = container.querySelectorAll(`.${styles.word}`);
+        contentTl.fromTo(
+          words,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, ease: "power2.out", stagger: 0.04, duration: 0.6 },
+          startTime
+        );
+      };
 
-      // Line 1 — bold statement slides up
-      contentTl.fromTo(
-        line1Ref.current,
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1, ease: "power3.out", duration: 0.5 },
-        0.08
-      );
-
-      // Line 2 — description slides up
-      contentTl.fromTo(
-        line2Ref.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, ease: "power3.out", duration: 0.5 },
-        0.22
-      );
-
-      // Line 3 — closing thought slides up
-      contentTl.fromTo(
-        line3Ref.current,
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, ease: "power3.out", duration: 0.5 },
-        0.38
-      );
+      animateWords(line1Ref.current, 0.08);
+      animateWords(line2Ref.current, 0.22);
+      animateWords(line3Ref.current, 0.38);
     }, wrapperRef);
 
     return () => ctx.revert();
@@ -182,18 +165,22 @@ export default function EssenceSection() {
           ))}
         </h2>
 
-        <div ref={dividerRef} className={styles.divider} />
-
         <p ref={line1Ref} className={`${styles.quoteLine} ${styles.line1}`}>
-          Spaces are not filled first and refined later.
+          {"Spaces are not filled first and refined later.".split(" ").map((word, i) => (
+            <span key={i} className={styles.word}>{word}&nbsp;</span>
+          ))}
         </p>
 
         <p ref={line2Ref} className={`${styles.quoteLine} ${styles.line2}`}>
-          They are shaped through light, form, and intention. Every element belongs within the space it creates.
+          {"They are shaped through light, form, and intention. Every element belongs within the space it creates.".split(" ").map((word, i) => (
+            <span key={i} className={styles.word}>{word}&nbsp;</span>
+          ))}
         </p>
 
         <p ref={line3Ref} className={`${styles.quoteLine} ${styles.line3}`}>
-          Once complete, the space begins to live on its own.
+          {"Once complete, the space begins to live on its own.".split(" ").map((word, i) => (
+            <span key={i} className={styles.word}>{word}&nbsp;</span>
+          ))}
         </p>
 
       </div>
