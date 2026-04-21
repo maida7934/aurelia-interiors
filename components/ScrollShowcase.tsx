@@ -34,6 +34,7 @@ export default function ScrollShowcase() {
   const centerRef = useRef<HTMLDivElement>(null);
   const designTextRef = useRef<HTMLDivElement>(null);
   const creamBottomRef = useRef<HTMLDivElement>(null);
+  const darkBgRef = useRef<HTMLDivElement>(null);
   const satelliteRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -151,39 +152,70 @@ export default function ScrollShowcase() {
       );
 
       /* ============================================================
-         PHASE 2 — Arch morph (0.55 → 1.0)
+         PHASE 2 — Arch morph + co-motion slide (0.55 → 1.0)
          ============================================================
-         After the image is fully revealed, the container:
-           1. Shrinks to a small arch shape
-           2. Moves slightly above center
-           3. Morphs border-radius into arch (round top, flat bottom)
+         The dark background and arch move TOGETHER at the same speed.
          
-         Below the arch, the cream site background reveals,
-         creating the transition into the next section.
+         Layout (z-order):
+           Layer          | Z  | Role
+           ───────────────┼────┼──────────────────────────────
+           Cream panel    | 4  | Revealed below as both slide up
+           Dark background| 5  | 71% tall, arch sits on its bottom edge
+           Arch (center)  | 10 | Morphs into arch, rests ON the dark bg
+         
+         Both darkBg and arch translate upward by the same amount,
+         so the arch stays glued to the dark bg's bottom edge.
+         Cream is revealed in the space they vacate.
          ============================================================ */
+
+      const upwardShift = -(window.innerHeight * 0.20); // 20vh in pixels
+
+      /* ── A. Cream panel: fade in (hidden by darkBg on top) ───────── */
+      tl.to(
+        creamBottomRef.current,
+        {
+          opacity: 1,
+          ease: "power1.in",
+          duration: 0.1,
+        },
+        0.48
+      );
+
+      /* ── B. Dark background: fade in simultaneously ────────────── */
+      tl.to(
+        darkBgRef.current,
+        {
+          opacity: 1,
+          ease: "power1.in",
+          duration: 0.1,
+        },
+        0.48
+      );
+
+      /* ── C. Arch morph + slide up ──────────────────────────────── */
       tl.to(
         centerRef.current,
         {
           width: "18%",
           height: "42%",
-          top: "40%",
           borderRadius: "999px 999px 0 0",
+          boxShadow: "0 12px 80px rgba(0, 0, 0, 0.7)",
+          y: upwardShift,               // Move up WITH dark bg
           ease: "power2.inOut",
           duration: 0.45,
         },
         0.55
       );
 
-      /* ── Cream bottom panel: reveals site background below arch ── */
-      tl.fromTo(
-        creamBottomRef.current,
-        { opacity: 0 },
+      /* ── D. Dark background: slide up at SAME speed ────────────── */
+      tl.to(
+        darkBgRef.current,
         {
-          opacity: 1,
-          ease: "power2.inOut",
-          duration: 0.35,
+          y: upwardShift,               // Same shift = same speed
+          ease: "power2.inOut",          // Same ease = move in lockstep
+          duration: 0.45,
         },
-        0.6
+        0.55
       );
 
       /* ============================================================
@@ -284,6 +316,9 @@ export default function ScrollShowcase() {
 
         {/* ── Bottom tagline ─────────────────────────────────── */}
         <span className={styles.bottomTagline}>Imagine Possible</span>
+
+        {/* ── Dark parallax background — moves UP behind the arch ─ */}
+        <div ref={darkBgRef} className={styles.darkBg} aria-hidden="true" />
 
         {/* ── Cream bottom panel — site bg below arch ────────── */}
         <div ref={creamBottomRef} className={styles.creamBottom} aria-hidden="true" />

@@ -1,0 +1,210 @@
+.studioSection {
+  background-color: #F1EADE;
+  width: 100%;
+  /* No top padding — heading sits flush below the arch */
+  padding: 4rem 2rem 8rem;
+  color: #1a1714;
+  position: relative;
+  z-index: 10;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+}
+
+/* ── Ladder Text ── */
+.ladderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ladderWord {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.5rem, 7vw, 8rem);
+  font-weight: 500;
+  line-height: 0.75;
+  display: block;
+  font-style: italic;
+  will-change: transform, opacity;
+}
+
+/* ── Paragraph ── */
+.paragraphContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 5%;
+}
+
+.paragraphText {
+  max-width: 450px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  font-weight: 300;
+  color: #333;
+  will-change: transform, opacity;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .studioSection {
+    padding: 5rem 1.5rem;
+  }
+
+  .container {
+    gap: 4rem;
+  }
+
+  .ladderWord {
+    /* Reduce shift on mobile to avoid overflow */
+    margin-left: 0 !important;
+    padding-left: var(--shift, 0);
+  }
+
+  .ladderWord:nth-child(1) {
+    --shift: 0%;
+  }
+
+  .ladderWord:nth-child(2) {
+    --shift: 10%;
+  }
+
+  .ladderWord:nth-child(3) {
+    --shift: 20%;
+  }
+
+  .ladderWord:nth-child(4) {
+    --shift: 30%;
+  }
+
+  .paragraphContainer {
+    justify-content: flex-start;
+    padding-right: 0;
+  }
+}
+
+/* ── Boxes ── */
+.boxesContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.box {
+  width: 250px;
+  height: 300px;
+  background-color: rgba(26, 23, 20, 0.04);
+  border-radius: 30px;
+  position: relative;
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.box:hover {
+  transform: translateY(-5px);
+}
+
+.boxNumber {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.5rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(26, 23, 20, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(26, 23, 20, 0.8);
+}
+
+/* ── Box text copy ── */
+.boxText {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  font-weight: 300;
+  color: rgba(26, 23, 20, 0.75);
+}
+
+/* ── Box 4 parallax image ── */
+.box4ImageWrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Clips the image — parallax stays inside */
+  border-radius: 30px;
+}
+
+.box4Img {
+  width: 100%;
+  height: 120%;
+  /* Taller than container so drift has room */
+  object-fit: cover;
+  display: block;
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Individual Box Adjustments ── */
+/* You can now adjust widths, heights, margins, overrides, and placements for each individual box below */
+
+.box1 {
+  /* Example: margin-right: 10rem; */
+  width: 370px;
+  height: 300px;
+  align-items: center;
+}
+
+.box2 {
+  width: 370px;
+  height: 300px;
+  margin-top: -4rem;
+  right: 35%;
+  /* Pulls it slightly above into box1 */
+
+  z-index: 2;
+}
+
+.box3 {
+  width: 370px;
+  height: 300px;
+  margin-top: -15rem;
+  z-index: 3;
+}
+
+.box4 {
+  width: 370px;
+  height: 300px;
+  right: 32%;
+  /* Places it on the left */
+}
+
+.box5 {
+  width: 370px;
+  height: 300px;
+  /* Pull it up so it sits precisely on the exact same row as box 4 */
+  margin-top: calc(-300px - 2rem);
+  left: 29%;
+  /* Places it symmetrically on the right */
+}
+
+.box6 {
+  width: 370px;
+  height: 300px;
+  /* Adjust margins or placement as needed */
+}
