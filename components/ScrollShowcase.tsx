@@ -17,15 +17,16 @@ interface SatelliteConfig {
   tx: number;
   ty: number;
   speed: number;
+  src: string;
 }
 
 const SATELLITES: SatelliteConfig[] = [
-  { id: "left1",        className: "left1",        tx: -120, ty: -40,  speed: 1.0  },
-  { id: "left2",        className: "left2",        tx: -130, ty: -10,  speed: 0.9  },
-  { id: "smallTR",      className: "smallTR",      tx:  100, ty: -80,  speed: 1.2  },
-  { id: "right1",       className: "right1",       tx:  120, ty: -30,  speed: 1.0  },
-  { id: "right2",       className: "right2",       tx:  130, ty:  40,  speed: 0.9  },
-  { id: "bottomCenter", className: "bottomCenter", tx:    0, ty: 120,  speed: 1.0  },
+  { id: "left1", className: "left1", tx: -120, ty: -40, speed: 1.0, src: "/design2.jpeg" },
+  { id: "left2", className: "left2", tx: -130, ty: -10, speed: 0.9, src: "/design3.jpeg" },
+  { id: "smallTR", className: "smallTR", tx: 100, ty: -80, speed: 1.2, src: "/design4.jpeg" },
+  { id: "right1", className: "right1", tx: 120, ty: -30, speed: 1.0, src: "/design5.jpeg" },
+  { id: "right2", className: "right2", tx: 130, ty: 40, speed: 0.9, src: "/design6.jpeg" },
+  { id: "bottomCenter", className: "bottomCenter", tx: 0, ty: 120, speed: 1.0, src: "/design7.jpeg" },
 ];
 
 export default function ScrollShowcase() {
@@ -275,7 +276,7 @@ export default function ScrollShowcase() {
               As the container expands → more image revealed. */}
           <img
             className={styles.centerImage}
-            src="/scroll.jpeg"
+            src="/design1.jpeg"
             alt="Featured interior — scroll to explore"
             draggable={false}
           />
@@ -307,7 +308,7 @@ export default function ScrollShowcase() {
             className={`${styles.imgCard} ${styles[sat.className]}`}
           >
             <img
-              src="/scroll.jpeg"
+              src={sat.src}
               alt={`Interior showcase ${i + 1}`}
               draggable={false}
             />
