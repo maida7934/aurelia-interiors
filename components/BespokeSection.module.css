@@ -3,7 +3,6 @@
   width: 100%;
   z-index: 10;
   background: #F1EADE;
-  overflow: hidden;
 }
 
 .inner {
@@ -12,15 +11,48 @@
   padding: 8rem 5%;
   justify-content: center;
   gap: 6rem;
-  /* Control distance between picture and text */
+}
+
+/* ================================================================
+   REVEAL SYSTEM — overflow-hidden clip + inner transform
+   Each element starts pushed 130% below its container,
+   then GSAP slides it up into view for a clean text-emerging effect.
+   ================================================================ */
+.revealClip {
+  overflow: hidden;
+  position: relative;
+}
+
+.revealClipAbsolute {
+  overflow: hidden;
+  position: absolute;
+  right: -5%;
+  bottom: -3.5rem;
+}
+
+.revealInner {
+  display: block;
   will-change: transform, opacity;
 }
 
+/* ================================================================
+   LEFT COLUMN — Image
+   ================================================================ */
 .leftCol {
   flex: 0 0 400px;
-  /* Make picture smaller and fixed width */
   height: 550px;
   position: relative;
+}
+
+.leftCol .revealClip {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.leftCol .revealInner {
+  width: 100%;
+  height: 100%;
 }
 
 .image {
@@ -31,9 +63,11 @@
   border-radius: 4px;
 }
 
+/* ================================================================
+   RIGHT COLUMN — Text content
+   ================================================================ */
 .rightCol {
   flex: 0 1 450px;
-  /* Contain text and push closer */
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -47,6 +81,7 @@
   align-items: flex-start;
 }
 
+/* ── Heading ────────────────────────────────────────────────── */
 .headingWrap {
   align-self: center;
   margin-bottom: 4rem;
@@ -71,7 +106,6 @@
 
 .word1 {
   font-size: clamp(2rem, 5vw, 2.8rem);
-  /* Smaller text */
   align-self: flex-start;
   margin-left: -20%;
   letter-spacing: 0.05em;
@@ -81,7 +115,6 @@
 .word2 {
   font-size: clamp(2.5rem, 4vw, 3.5rem);
   margin-left: -30%;
-  /* Smaller text */
   letter-spacing: 0.05em;
   margin-bottom: 0.2rem;
 }
@@ -89,23 +122,17 @@
 .word3 {
   font-size: clamp(3rem, 5vw, 4.2rem);
   margin-left: -30%;
-  /* Smaller text */
   letter-spacing: 0.02em;
 }
 
 .word4 {
-  position: absolute;
-  right: -5%;
-  bottom: -3.5rem;
   font-family: 'Alex Brush', cursive;
   font-size: clamp(3rem, 5vw, 4rem);
-  margin-left: 50%;
-  /* Smaller text */
   color: #cda877;
   z-index: 2;
-
 }
 
+/* ── Availability ───────────────────────────────────────────── */
 .availability {
   display: flex;
   align-items: center;
@@ -127,6 +154,7 @@
   letter-spacing: 0.05em;
 }
 
+/* ── Paragraph ──────────────────────────────────────────────── */
 .paragraph {
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
@@ -136,6 +164,7 @@
   margin-bottom: 2.5rem;
 }
 
+/* ── CTA Link ───────────────────────────────────────────────── */
 .link {
   display: flex;
   align-items: center;
@@ -158,6 +187,9 @@
   line-height: 1;
 }
 
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
 @media (max-width: 992px) {
   .inner {
     flex-direction: column;

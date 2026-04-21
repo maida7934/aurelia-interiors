@@ -9,30 +9,41 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function BespokeSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
+  const revealRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const section = sectionRef.current;
-    const inner = innerRef.current;
-    if (!section || !inner) return;
+    if (!section) return;
 
-    // The section slides up from below, creating a seamless transition
-    // from the Origin Objects pinned section
-    gsap.set(inner, { y: 120, opacity: 0 });
+    const reveals = revealRefs.current.filter(Boolean) as HTMLDivElement[];
 
+    // Set initial state — each inner element starts pushed below its clip mask
+    reveals.forEach((el) => {
+      const inner = el.querySelector(`.${styles.revealInner}`) as HTMLElement;
+      if (inner) {
+        gsap.set(inner, { yPercent: 130, opacity: 0 });
+      }
+    });
+
+    // Create staggered scroll-triggered reveal
     const st = ScrollTrigger.create({
       trigger: section,
-      start: "top 95%",
-      end: "top 20%",
-      scrub: 1,
-      onUpdate: (self) => {
-        const p = self.progress;
-        const eased = gsap.parseEase("power2.out")(p);
-        gsap.set(inner, {
-          y: (1 - eased) * 120,
-          opacity: eased,
+      start: "top 92%",
+      onEnter: () => {
+        reveals.forEach((el, i) => {
+          const inner = el.querySelector(`.${styles.revealInner}`) as HTMLElement;
+          if (!inner) return;
+
+          gsap.to(inner, {
+            yPercent: 0,
+            opacity: 1,
+            duration: 1.4,
+            delay: i * 0.12,
+            ease: "power4.out",
+          });
         });
       },
+      once: true,
     });
 
     return () => {
@@ -42,42 +53,92 @@ export default function BespokeSection() {
 
   return (
     <section ref={sectionRef} className={styles.section}>
-      <div ref={innerRef} className={styles.inner}>
+      <div className={styles.inner}>
+
+        {/* ── Image — clip-reveal from below ── */}
         <div className={styles.leftCol}>
-          <img
-            src="/design6.jpeg"
-            alt="Aurelia Bespoke"
-            className={styles.image}
-            draggable={false}
-          />
+          <div
+            ref={(el) => { revealRefs.current[0] = el; }}
+            className={styles.revealClip}
+          >
+            <div className={styles.revealInner}>
+              <img
+                src="/design6.jpeg"
+                alt="Aurelia Bespoke"
+                className={styles.image}
+                draggable={false}
+              />
+            </div>
+          </div>
         </div>
+
+        {/* ── Right column — each element has its own clip-reveal ── */}
         <div className={styles.rightCol}>
           <div className={styles.content}>
-            
+
+            {/* Heading words — each wrapped for individual clip */}
             <div className={styles.headingWrap}>
               <h2 className={styles.heading}>
-                <span className={styles.word1}>AURELIA</span>
-                <span className={styles.word2}>BESPOKE</span>
-                <span className={styles.word3}>FURNITURE</span>
-                <span className={styles.word4}>Collection</span>
+                <div
+                  ref={(el) => { revealRefs.current[1] = el; }}
+                  className={styles.revealClip}
+                >
+                  <span className={`${styles.revealInner} ${styles.word1}`}>AURELIA</span>
+                </div>
+                <div
+                  ref={(el) => { revealRefs.current[2] = el; }}
+                  className={styles.revealClip}
+                >
+                  <span className={`${styles.revealInner} ${styles.word2}`}>BESPOKE</span>
+                </div>
+                <div
+                  ref={(el) => { revealRefs.current[3] = el; }}
+                  className={styles.revealClip}
+                >
+                  <span className={`${styles.revealInner} ${styles.word3}`}>FURNITURE</span>
+                </div>
+                <div
+                  ref={(el) => { revealRefs.current[4] = el; }}
+                  className={styles.revealClipAbsolute}
+                >
+                  <span className={`${styles.revealInner} ${styles.word4}`}>Collection</span>
+                </div>
               </h2>
             </div>
-            
-            <div className={styles.availability}>
-              <div className={styles.line}></div>
-              <span className={styles.availText}>(AVAILABLE NOW)</span>
+
+            {/* Availability line */}
+            <div
+              ref={(el) => { revealRefs.current[5] = el; }}
+              className={styles.revealClip}
+            >
+              <div className={`${styles.revealInner} ${styles.availability}`}>
+                <div className={styles.line}></div>
+                <span className={styles.availText}>(AVAILABLE NOW)</span>
+              </div>
             </div>
-            
-            <p className={styles.paragraph}>
-              The very first bespoke furniture line is rich and raw, powerful and
-              luxurious. A presence that anchors your space and memory. Sensual and
-              bold, cosmopolitan and timeless.
-            </p>
-            
-            <a href="#" className={styles.link}>
-              <span className={styles.arrows}>»</span> VISIT OUR ATELIER
-            </a>
-            
+
+            {/* Paragraph */}
+            <div
+              ref={(el) => { revealRefs.current[6] = el; }}
+              className={styles.revealClip}
+            >
+              <p className={`${styles.revealInner} ${styles.paragraph}`}>
+                The very first bespoke furniture line is rich and raw, powerful and
+                luxurious. A presence that anchors your space and memory. Sensual and
+                bold, cosmopolitan and timeless.
+              </p>
+            </div>
+
+            {/* CTA link */}
+            <div
+              ref={(el) => { revealRefs.current[7] = el; }}
+              className={styles.revealClip}
+            >
+              <a href="#" className={`${styles.revealInner} ${styles.link}`}>
+                <span className={styles.arrows}>»</span> VISIT OUR ATELIER
+              </a>
+            </div>
+
           </div>
         </div>
       </div>

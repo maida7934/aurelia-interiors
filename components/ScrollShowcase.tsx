@@ -370,16 +370,18 @@ export default function ScrollShowcase() {
 
         {/* ── Ladder text — "Fully Equipped Design Studio" ──── */}
         <div ref={ladderRef} className={styles.ladderContainer}>
-          {["Fully", "Equipped", "Design", "Studio"].map((word, i) => (
-            <span
-              key={word}
-              ref={(el) => { ladderWordRefs.current[i] = el; }}
-              className={styles.ladderWord}
-              style={{ marginLeft: `${i * 15}%` }}
-            >
-              {word}
-            </span>
-          ))}
+          <span ref={(el) => { ladderWordRefs.current[0] = el; }} className={`${styles.ladderWord} ${styles.word1}`}>
+            Fully
+          </span>
+          <span ref={(el) => { ladderWordRefs.current[1] = el; }} className={`${styles.ladderWord} ${styles.word2}`}>
+            Equipped
+          </span>
+          <span ref={(el) => { ladderWordRefs.current[2] = el; }} className={`${styles.ladderWord} ${styles.word3}`}>
+            Design
+          </span>
+          <span ref={(el) => { ladderWordRefs.current[3] = el; }} className={`${styles.ladderWord} ${styles.word4}`}>
+            Studio
+          </span>
         </div>
       </div>
     </div>
