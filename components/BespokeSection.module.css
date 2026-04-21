@@ -1,0 +1,178 @@
+.section {
+  position: relative;
+  width: 100%;
+  z-index: 10;
+  background: #F1EADE;
+  overflow: hidden;
+}
+
+.inner {
+  display: flex;
+  width: 100%;
+  padding: 8rem 5%;
+  justify-content: center;
+  gap: 6rem;
+  /* Control distance between picture and text */
+  will-change: transform, opacity;
+}
+
+.leftCol {
+  flex: 0 0 400px;
+  /* Make picture smaller and fixed width */
+  height: 550px;
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+}
+
+.rightCol {
+  flex: 0 1 450px;
+  /* Contain text and push closer */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.headingWrap {
+  align-self: center;
+  margin-bottom: 4rem;
+  margin-top: 1rem;
+}
+
+.heading {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.word1,
+.word2,
+.word3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  color: #1a1714;
+  line-height: 1;
+}
+
+.word1 {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  /* Smaller text */
+  align-self: flex-start;
+  margin-left: -20%;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.word2 {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  margin-left: -30%;
+  /* Smaller text */
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.word3 {
+  font-size: clamp(3rem, 5vw, 4.2rem);
+  margin-left: -30%;
+  /* Smaller text */
+  letter-spacing: 0.02em;
+}
+
+.word4 {
+  position: absolute;
+  right: -5%;
+  bottom: -3.5rem;
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(3rem, 5vw, 4rem);
+  margin-left: 50%;
+  /* Smaller text */
+  color: #cda877;
+  z-index: 2;
+
+}
+
+.availability {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.line {
+  width: 60px;
+  height: 1px;
+  background-color: #cda877;
+}
+
+.availText {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #cda877;
+  letter-spacing: 0.05em;
+}
+
+.paragraph {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  font-weight: 300;
+  color: #4a453f;
+  margin-bottom: 2.5rem;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cda877;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: opacity 0.3s ease;
+}
+
+.link:hover {
+  opacity: 0.7;
+}
+
+.arrows {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+@media (max-width: 992px) {
+  .inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+  }
+
+  .leftCol {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 500px;
+    height: 450px;
+  }
+
+  .rightCol {
+    padding: 0;
+  }
+}

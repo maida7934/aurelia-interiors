@@ -297,6 +297,34 @@
 }
 
 /* ================================================================
+   LADDER TEXT — "Fully Equipped Design Studio"
+   Positioned at bottom of canvas, over the cream panel.
+   Reveals during the tail end of Phase 2.
+   ================================================================ */
+.ladderContainer {
+  position: absolute;
+  bottom: 1%;
+  left: 10%;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  will-change: opacity;
+  pointer-events: none;
+}
+
+.ladderWord {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.5rem, 7vw, 8rem);
+  font-weight: 500;
+  line-height: 0.75;
+  display: block;
+  font-style: italic;
+  color: #1a1714;
+  will-change: transform, opacity;
+}
+
+/* ================================================================
    RESPONSIVE
    ================================================================ */
 @media (max-width: 1024px) {

@@ -7,9 +7,11 @@ import styles from "./OriginObjectsSection.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ── Constants ────────────────────────────────────────────────── */
-const PHASE1 = 0.38;    // Phase 1 occupies first 38% of scroll
-const N = 4;             // Number of cards
+const PHASE1_END = 0.30;     // Phase 1 animation completes
+const CROSSFADE_START = 0.40; // Hold until here, then crossfade starts
+const CROSSFADE_END = 0.48;   // Crossfade completes
+const PHASE2_START = 0.50;    // Phase 2 animation starts moving
+const N = 4;                  // Number of cards
 
 const TITLES = [
   "(I) Material Palette",
@@ -18,8 +20,21 @@ const TITLES = [
   "(IV) Tactile Harmony",
 ];
 
-const CARD_DESC =
-  "Once envisioned, each space evolves from its foundation — blending form, function, and narrative to create an enduring environment.";
+/* ── Per-card descriptions shown in the left panel ──────────── */
+const CARD_DESCS = [
+  "Every material carries a story — from hand-selected marble veins to the grain of aged oak. Our palette begins where nature ends, curating textures that speak of permanence and poetry.",
+  "Space is not merely occupied; it is composed. Each room is orchestrated like a symphony — proportion, rhythm, and negative space converging to create harmony that resonates.",
+  "Light sculpts what architecture frames. We design for the sun's migration, crafting interiors where shadows become features and golden hours become daily rituals.",
+  "The final measure of a space is how it feels beneath your fingertips. Every surface, every edge, every threshold is calibrated for an encounter that lingers in memory.",
+];
+
+/* ── Card Images ────────────────────────────────────────────── */
+const CARD_IMAGES = [
+  "/design6.jpeg",
+  "/design1.jpeg",
+  "/hero.jpeg",
+  "/design5.jpeg",
+];
 
 /* ── Pill images — using the available scroll.jpeg for now ──── */
 const PILL_IMAGES = [
@@ -31,6 +46,7 @@ const PILL_IMAGES = [
 
 export default function OriginObjectsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const pinContainerRef = useRef<HTMLDivElement>(null);
 
   // Phase 1 refs
   const splitStageRef = useRef<HTMLDivElement>(null);
@@ -41,24 +57,30 @@ export default function OriginObjectsSection() {
 
   // Phase 2 refs
   const cardsStageRef = useRef<HTMLDivElement>(null);
-  const cardNameRef = useRef<HTMLParagraphElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const descRef = useRef<HTMLParagraphElement>(null);
+  const descTextsRef = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
     const section = sectionRef.current;
     const splitStage = splitStageRef.current;
     const cardsStage = cardsStageRef.current;
-    if (!section || !splitStage || !cardsStage) return;
+    const pinContainer = pinContainerRef.current;
+    if (!section || !splitStage || !cardsStage || !pinContainer) return;
 
     const pills = pillRefs.current.filter(Boolean) as HTMLDivElement[];
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+    const descTexts = descTextsRef.current.filter(Boolean) as HTMLSpanElement[];
 
-    /* ── ScrollTrigger — pins nothing, just tracks progress ──── */
+    let prevCardIdx = 0;
+
+    /* ── ScrollTrigger — pins the container and scrubs ──── */
     const st = ScrollTrigger.create({
-      trigger: section,
+      trigger: pinContainer,
       start: "top top",
-      end: "bottom bottom",
+      end: "+=800%",        // 800vh of pinning scroll (doubled for slower pace)
+      pin: true,
       scrub: 1.4,           // 1.4s lag — buttery smooth
       onUpdate: (self) => {
         const p = self.progress;
@@ -66,23 +88,13 @@ export default function OriginObjectsSection() {
         crossfade(p);
         updatePhase2(p);
       },
-      onToggle: (self) => {
-        // Show/hide the fixed stages based on whether section is in view
-        if (self.isActive) {
-          splitStage.style.display = "flex";
-          cardsStage.style.display = "flex";
-        } else {
-          splitStage.style.display = "none";
-          cardsStage.style.display = "none";
-        }
-      },
     });
 
     /* ════════════════════════════════════════════════════════════
        PHASE 1 — Words split apart, pills rise in
        ════════════════════════════════════════════════════════════ */
     function updatePhase1(p: number) {
-      const p1 = gsap.utils.clamp(0, 1, p / PHASE1);
+      const p1 = gsap.utils.clamp(0, 1, p / PHASE1_END);
       const e1 = gsap.parseEase("power2.inOut")(p1);
 
       // Words spread apart
@@ -112,10 +124,9 @@ export default function OriginObjectsSection() {
        CROSSFADE — Phase 1 fades out, Phase 2 fades in
        ════════════════════════════════════════════════════════════ */
     function crossfade(p: number) {
-      // Phase 1 fades out between 38%–45% of total scroll
-      const fade1 = 1 - gsap.utils.clamp(0, 1, (p - 0.38) / 0.07);
-      // Phase 2 fades in over the same window
-      const fade2 = gsap.utils.clamp(0, 1, (p - 0.38) / 0.07);
+      const progress = gsap.utils.clamp(0, 1, (p - CROSSFADE_START) / (CROSSFADE_END - CROSSFADE_START));
+      const fade1 = 1 - progress;
+      const fade2 = progress;
 
       gsap.set(splitStage, {
         opacity: fade1,
@@ -131,56 +142,91 @@ export default function OriginObjectsSection() {
        PHASE 2 — Card stack lift/hold/exit
        ════════════════════════════════════════════════════════════ */
     function updatePhase2(p: number) {
-      if (p <= PHASE1) return;
+      if (p <= CROSSFADE_START) return;
 
       // Normalize p2 to 0→1 across phase 2's scroll range
-      const p2 = gsap.utils.clamp(0, 1, (p - PHASE1) / (1 - PHASE1));
+      const p2 = gsap.utils.clamp(0, 1, (p - PHASE2_START) / (1 - PHASE2_START));
       const slot = p2 * N;
       const cur = Math.floor(gsap.utils.clamp(0, N - 0.001, slot));
       const frac = slot - cur; // 0→1 within this card's slice
 
-      // Update text
-      if (cardNameRef.current) {
-        cardNameRef.current.textContent = TITLES[cur];
-      }
+      // Update counter
       if (counterRef.current) {
         counterRef.current.textContent = `${cur + 1}/${N}`;
+      }
+
+      // Update description text — crossfade between paragraphs
+      if (cur !== prevCardIdx || p2 < 0.01) {
+        descTexts.forEach((span, i) => {
+          if (i === cur) {
+            gsap.to(span, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+          } else {
+            gsap.to(span, { opacity: 0, y: i < cur ? -12 : 12, duration: 0.3, ease: "power2.in" });
+          }
+        });
+        prevCardIdx = cur;
       }
 
       cards.forEach((card, i) => {
         const restY = -i * 12;
         const restS = 1 - i * 0.04;
 
+        // Get the line divider element for this card
+        const dividerEl = card.querySelector(`.${styles.cardDivider}`) as HTMLElement | null;
+
         if (i < cur) {
           // Already gone — hidden above
           gsap.set(card, { y: -420, scale: 0.9, opacity: 0, zIndex: 1 });
+          if (dividerEl) gsap.set(dividerEl, { opacity: 0 });
         } else if (i === cur) {
           // Active card — lifts from stack then exits upward
+          // EXCEPT the last card: it stays in place so the page scrolls naturally
+          const isLastCard = i === N - 1;
           const entryT = gsap.utils.clamp(0, 1, frac / 0.4);
-          const exitT = gsap.utils.clamp(0, 1, (frac - 0.6) / 0.4);
           const eEntry = gsap.parseEase("power2.inOut")(entryT);
-          const eExit = gsap.parseEase("power2.inOut")(exitT);
 
-          if (exitT > 0) {
-            gsap.set(card, {
-              y: gsap.utils.interpolate(restY - 72, -400, eExit),
-              scale: gsap.utils.interpolate(1.05, 0.92, eExit),
-              opacity: 1 - eExit,
-              zIndex: N + 10,
-            });
-          } else {
+          // Show line divider on active card
+          if (dividerEl) {
+            gsap.set(dividerEl, { opacity: eEntry, scaleX: eEntry });
+          }
+
+          if (isLastCard) {
+            // Last card — lift from stack then hold in place (no exit)
             gsap.set(card, {
               y: gsap.utils.interpolate(restY, restY - 72, eEntry),
               scale: gsap.utils.interpolate(restS, 1.05, eEntry),
               opacity: 1,
               zIndex: N + 10,
             });
+          } else {
+            const exitT = gsap.utils.clamp(0, 1, (frac - 0.6) / 0.4);
+            const eExit = gsap.parseEase("power2.inOut")(exitT);
+
+            if (exitT > 0) {
+              gsap.set(card, {
+                y: gsap.utils.interpolate(restY - 72, -400, eExit),
+                scale: gsap.utils.interpolate(1.05, 0.92, eExit),
+                opacity: 1 - eExit,
+                zIndex: N + 10,
+              });
+              if (dividerEl) gsap.set(dividerEl, { opacity: 1 - eExit });
+            } else {
+              gsap.set(card, {
+                y: gsap.utils.interpolate(restY, restY - 72, eEntry),
+                scale: gsap.utils.interpolate(restS, 1.05, eEntry),
+                opacity: 1,
+                zIndex: N + 10,
+              });
+            }
           }
         } else {
           // Waiting in stack — compress forward as current card exits
           const stackPos = i - cur;
           const shiftT = gsap.utils.clamp(0, 1, frac / 0.5);
           const eShift = gsap.parseEase("power2.inOut")(shiftT);
+
+          // Hide divider on non-active cards
+          if (dividerEl) gsap.set(dividerEl, { opacity: 0 });
 
           gsap.set(card, {
             y: gsap.utils.interpolate(
@@ -207,13 +253,13 @@ export default function OriginObjectsSection() {
 
   return (
     <section ref={sectionRef} className={styles.wrapper}>
+      <div ref={pinContainerRef} className={styles.pinContainer}>
 
-      {/* ── Phase 1: Split text + pill reveal ── */}
-      <div
-        ref={splitStageRef}
-        className={styles.splitStage}
-        style={{ display: "none" }}
-      >
+        {/* ── Phase 1: Split text + pill reveal ── */}
+        <div
+          ref={splitStageRef}
+          className={styles.splitStage}
+        >
         <div className={styles.splitRow}>
           <span ref={wordOriginRef} className={styles.word}>
             Origin
@@ -243,17 +289,29 @@ export default function OriginObjectsSection() {
         </div>
       </div>
 
-      {/* ── Phase 2: Card stack with flanking text ── */}
-      <div
-        ref={cardsStageRef}
-        className={styles.cardsStage}
-        style={{ display: "none" }}
-      >
+        {/* ── Phase 2: Card stack with flanking text ── */}
+        <div
+          ref={cardsStageRef}
+          className={styles.cardsStage}
+        >
         <div className={styles.sideLeft}>
-          <p ref={cardNameRef} className={styles.cardName}>
-            {TITLES[0]}
+          <p ref={descRef} className={styles.cardDesc}>
+            {CARD_DESCS.map((desc, i) => (
+              <span
+                key={i}
+                ref={(el) => {
+                  descTextsRef.current[i] = el;
+                }}
+                className={styles.descText}
+                style={{
+                  opacity: i === 0 ? 1 : 0,
+                  transform: i === 0 ? 'translateY(0)' : 'translateY(12px)',
+                }}
+              >
+                {desc}
+              </span>
+            ))}
           </p>
-          <p className={styles.cardDesc}>{CARD_DESC}</p>
         </div>
 
         <div className={styles.stackWrap}>
@@ -274,8 +332,13 @@ export default function OriginObjectsSection() {
                   zIndex: N - dataIdx,
                 }}
               >
-                <img src="/design4.jpeg" alt={title} draggable={false} />
-                <span className={styles.cardLabel}>{title}</span>
+                <img src={CARD_IMAGES[dataIdx]} alt={title} draggable={false} />
+                {/* ── Line divider across middle of card ── */}
+                <div className={styles.cardDivider}>
+                  <div className={styles.dividerLine} />
+                  <span className={styles.dividerLabel}>{TITLES[dataIdx]}</span>
+                  <div className={styles.dividerLine} />
+                </div>
               </div>
             );
           })}
@@ -285,6 +348,7 @@ export default function OriginObjectsSection() {
           <span ref={counterRef} className={styles.counter}>
             1/{N}
           </span>
+          </div>
         </div>
       </div>
     </section>

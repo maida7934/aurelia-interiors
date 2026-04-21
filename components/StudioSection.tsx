@@ -49,30 +49,12 @@ const BOX_CONTENT = [
 
 export default function StudioSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const wordsRef = useRef<(HTMLSpanElement | null)[]>([]);
   const textRef = useRef<HTMLParagraphElement>(null);
   const box4ContainerRef = useRef<HTMLDivElement>(null);
   const box4ImgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Fade and slide in the ladder words
-      gsap.fromTo(
-        wordsRef.current,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 70%",
-          },
-        }
-      );
-
       // Fade in the paragraph
       gsap.fromTo(
         textRef.current,
@@ -90,7 +72,6 @@ export default function StudioSection() {
       );
 
       // Box 4 — image parallax scroll
-      // The container stays pinned in layout; the image inside drifts upward as you scroll past
       if (box4ImgRef.current && box4ContainerRef.current) {
         gsap.fromTo(
           box4ImgRef.current,
@@ -115,20 +96,6 @@ export default function StudioSection() {
   return (
     <section className={styles.studioSection} ref={sectionRef}>
       <div className={styles.container}>
-
-        {/* ── Heading ── */}
-        <div className={styles.ladderContainer}>
-          {["Fully", "Equipped", "Design", "Studio"].map((word, i) => (
-            <span
-              key={word}
-              ref={(el) => { wordsRef.current[i] = el; }}
-              className={styles.ladderWord}
-              style={{ marginLeft: `${i * 15}%` }}
-            >
-              {word}
-            </span>
-          ))}
-        </div>
 
         {/* ── Intro paragraph ── */}
         <div className={styles.paragraphContainer}>

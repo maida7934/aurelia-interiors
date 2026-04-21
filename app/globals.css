@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Canela';
+  src: url('/Canela-RegularItalic-Trial.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;

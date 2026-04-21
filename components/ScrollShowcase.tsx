@@ -37,6 +37,8 @@ export default function ScrollShowcase() {
   const creamBottomRef = useRef<HTMLDivElement>(null);
   const darkBgRef = useRef<HTMLDivElement>(null);
   const satelliteRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const ladderRef = useRef<HTMLDivElement>(null);
+  const ladderWordRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -260,6 +262,48 @@ export default function ScrollShowcase() {
         },
       });
 
+      /* ============================================================
+         PHASE 3 — Ladder text reveal on the cream panel
+         ============================================================
+         The "Fully Equipped Design Studio" text appears at the bottom
+         of the canvas over the cream panel as the arch slides up.
+         Each word staggers in from below.
+         ============================================================ */
+      const ladderWords = ladderWordRefs.current.filter(Boolean) as HTMLSpanElement[];
+
+      // Start hidden
+      ladderWords.forEach((word) => {
+        gsap.set(word, { opacity: 0, y: 60 });
+      });
+      if (ladderRef.current) {
+        gsap.set(ladderRef.current, { opacity: 0 });
+      }
+
+      // Fade in the container
+      tl.to(
+        ladderRef.current,
+        {
+          opacity: 1,
+          ease: "power1.in",
+          duration: 0.05,
+        },
+        0.78
+      );
+
+      // Stagger-reveal each word
+      ladderWords.forEach((word, i) => {
+        tl.to(
+          word,
+          {
+            opacity: 1,
+            y: 0,
+            ease: "power3.out",
+            duration: 0.08,
+          },
+          0.80 + i * 0.04
+        );
+      });
+
     }, wrapperRef);
 
     return () => ctx.revert();
@@ -323,6 +367,20 @@ export default function ScrollShowcase() {
 
         {/* ── Cream bottom panel — site bg below arch ────────── */}
         <div ref={creamBottomRef} className={styles.creamBottom} aria-hidden="true" />
+
+        {/* ── Ladder text — "Fully Equipped Design Studio" ──── */}
+        <div ref={ladderRef} className={styles.ladderContainer}>
+          {["Fully", "Equipped", "Design", "Studio"].map((word, i) => (
+            <span
+              key={word}
+              ref={(el) => { ladderWordRefs.current[i] = el; }}
+              className={styles.ladderWord}
+              style={{ marginLeft: `${i * 15}%` }}
+            >
+              {word}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );

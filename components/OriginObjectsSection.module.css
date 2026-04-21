@@ -10,10 +10,20 @@
 .wrapper {
   position: relative;
   width: 100%;
-  height: 500vh;           /* Scroll room — drives animation duration */
   background: #F1EADE;
   z-index: 10;
-  margin-top: -4rem;       /* Pull up to reduce gap from StudioSection */
+  margin-top: -4rem;
+  /* Pull up to reduce gap from StudioSection */
+}
+
+.pinContainer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -21,7 +31,7 @@
    ═══════════════════════════════════════════════════════════════ */
 .splitStage,
 .cardsStage {
-  position: fixed;
+  position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
@@ -41,10 +51,9 @@
 }
 
 .word {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3rem, 6vw, 6rem);
-  font-weight: 300;
-  font-style: italic;
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(4rem, 8vw, 6rem);
+  font-weight: 400;
   color: #1a1714;
   white-space: nowrap;
   will-change: transform;
@@ -56,7 +65,8 @@
   align-items: flex-end;
   gap: 7px;
   overflow: hidden;
-  width: 0;                /* Starts collapsed, JS expands */
+  width: 0;
+  /* Starts collapsed, JS expands */
   will-change: width;
   flex-shrink: 0;
   justify-content: center;
@@ -66,7 +76,8 @@
 /* ── Individual pill ──────────────────────────────────────────── */
 .pill {
   width: 54px;
-  height: 88px;            /* Portrait rectangle */
+  height: 88px;
+  /* Portrait rectangle */
   border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
@@ -114,12 +125,25 @@
 }
 
 .cardDesc {
+  position: relative;
+  min-height: 7rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.78rem;
   font-weight: 300;
   letter-spacing: 0.03em;
   color: rgba(26, 23, 20, 0.5);
   line-height: 1.7;
+}
+
+/* ── Per-card description text (stacked, crossfaded via JS) ── */
+.descText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  will-change: opacity, transform;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .sideRight {
@@ -151,7 +175,6 @@
   position: absolute;
   inset: 0;
   border-radius: 18px;
-  overflow: hidden;
   background: rgba(26, 23, 20, 0.05);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
   will-change: transform, opacity;
@@ -165,17 +188,50 @@
   display: block;
   user-select: none;
   pointer-events: none;
+  border-radius: 18px;
 }
 
-.cardLabel {
+/* ═══════════════════════════════════════════════════════════════
+   CARD DIVIDER — Horizontal line across the middle of each card
+   Only shown on the active (front) card via JS opacity control
+   ═══════════════════════════════════════════════════════════════ */
+.cardDivider {
   position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  opacity: 0;
+  will-change: opacity, transform;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(205, 168, 119, 0.7) 20%,
+    rgba(205, 168, 119, 0.7) 80%,
+    transparent 100%
+  );
+}
+
+.dividerLabel {
+  white-space: nowrap;
   font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.9);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -203,5 +259,14 @@
 
   .cardsStage {
     gap: 0;
+  }
+
+  .cardDivider {
+    padding: 0 1rem;
+    gap: 0.6rem;
+  }
+
+  .dividerLabel {
+    font-size: 0.6rem;
   }
 }
