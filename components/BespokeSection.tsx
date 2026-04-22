@@ -81,25 +81,25 @@ export default function BespokeSection() {
               <h2 className={styles.heading}>
                 <div
                   ref={(el) => { revealRefs.current[1] = el; }}
-                  className={styles.revealClip}
+                  className={`${styles.revealClip} ${styles.clip1}`}
                 >
                   <span className={`${styles.revealInner} ${styles.word1}`}>AURELIA</span>
                 </div>
                 <div
                   ref={(el) => { revealRefs.current[2] = el; }}
-                  className={styles.revealClip}
+                  className={`${styles.revealClip} ${styles.clip2}`}
                 >
                   <span className={`${styles.revealInner} ${styles.word2}`}>BESPOKE</span>
                 </div>
                 <div
                   ref={(el) => { revealRefs.current[3] = el; }}
-                  className={styles.revealClip}
+                  className={`${styles.revealClip} ${styles.clip3}`}
                 >
                   <span className={`${styles.revealInner} ${styles.word3}`}>FURNITURE</span>
                 </div>
                 <div
                   ref={(el) => { revealRefs.current[4] = el; }}
-                  className={styles.revealClipAbsolute}
+                  className={`${styles.revealClipAbsolute} ${styles.clip4}`}
                 >
                   <span className={`${styles.revealInner} ${styles.word4}`}>Collection</span>
                 </div>

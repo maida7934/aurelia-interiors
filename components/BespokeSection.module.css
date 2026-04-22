@@ -28,6 +28,7 @@
   position: absolute;
   right: -5%;
   bottom: -3.5rem;
+  z-index: 2;
 }
 
 .revealInner {
@@ -95,6 +96,30 @@
   position: relative;
 }
 
+/* Wrapper classes for the clips to hold the margins/alignment */
+.clip1 {
+  align-self: flex-start;
+  margin-left: -20%;
+  margin-bottom: 0.2rem;
+  padding: 0.1em 0.15em; /* Padding prevents serif edges from clipping */
+}
+
+.clip2 {
+  margin-left: -30%;
+  margin-bottom: 0.2rem;
+  padding: 0.1em 0.15em;
+}
+
+.clip3 {
+  margin-left: -30%;
+  padding: 0.1em 0.15em;
+}
+
+.clip4 {
+  margin-left: 50%;
+  padding: 0.2em 0.4em; /* Cursive fonts need more padding to prevent loop clipping */
+}
+
 .word1,
 .word2,
 .word3 {
@@ -106,22 +131,16 @@
 
 .word1 {
   font-size: clamp(2rem, 5vw, 2.8rem);
-  align-self: flex-start;
-  margin-left: -20%;
   letter-spacing: 0.05em;
-  margin-bottom: 0.2rem;
 }
 
 .word2 {
   font-size: clamp(2.5rem, 4vw, 3.5rem);
-  margin-left: -30%;
   letter-spacing: 0.05em;
-  margin-bottom: 0.2rem;
 }
 
 .word3 {
   font-size: clamp(3rem, 5vw, 4.2rem);
-  margin-left: -30%;
   letter-spacing: 0.02em;
 }
 
@@ -129,7 +148,7 @@
   font-family: 'Alex Brush', cursive;
   font-size: clamp(3rem, 5vw, 4rem);
   color: #cda877;
-  z-index: 2;
+  line-height: 1.2;
 }
 
 /* ── Availability ───────────────────────────────────────────── */
