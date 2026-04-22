@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./StudioSection.module.css";
+import { triggerPageTransition } from "./PageTransition";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -134,7 +135,11 @@ export default function StudioSection() {
               is considered in relation to the whole. We focus on creating environments that feel intentional
               and composed, where textures, proportions, and spatial flow work together seamlessly.
             </p>
-            <button className={styles.aboutBtn}>
+            <button className={styles.aboutBtn} onClick={async (e) => {
+              e.preventDefault();
+              await triggerPageTransition();
+              window.scrollTo({ top: 0, behavior: "instant" });
+            }}>
               <span className={styles.aboutBtnText}>About Us</span>
               <div className={styles.aboutBtnFill}></div>
             </button>

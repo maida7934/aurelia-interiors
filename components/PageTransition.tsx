@@ -1,7 +1,15 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useRef, useState, useCallback } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState, useCallback, useEffect } from "react";
 import styles from "./PageTransition.module.css";
+
+export const triggerPageTransition = (): Promise<void> => {
+  return new Promise((resolve) => {
+    window.dispatchEvent(
+      new CustomEvent("play-page-transition", { detail: { resolve } })
+    );
+  });
+};
 
 export interface PageTransitionHandle {
   /** Fire the tile transition. Resolves after the curtain fully covers, then auto-retracts. */
@@ -35,6 +43,19 @@ const PageTransition = forwardRef<PageTransitionHandle>(function PageTransition(
   }, []);
 
   useImperativeHandle(ref, () => ({ play }), [play]);
+
+  useEffect(() => {
+    const handleEvent = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      play().then(() => {
+        if (customEvent.detail?.resolve) {
+          customEvent.detail.resolve();
+        }
+      });
+    };
+    window.addEventListener("play-page-transition", handleEvent);
+    return () => window.removeEventListener("play-page-transition", handleEvent);
+  }, [play]);
 
   return (
     <div

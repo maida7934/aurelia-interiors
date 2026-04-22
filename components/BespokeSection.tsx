@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./BespokeSection.module.css";
+import { triggerPageTransition } from "./PageTransition";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -159,7 +160,11 @@ export default function BespokeSection() {
               ref={(el) => { revealRefs.current[7] = el; }}
               className={styles.revealClip}
             >
-              <a href="#" className={`${styles.revealInner} ${styles.link}`}>
+              <a href="#" className={`${styles.revealInner} ${styles.link}`} onClick={async (e) => {
+                e.preventDefault();
+                await triggerPageTransition();
+                window.scrollTo({ top: 0, behavior: "instant" });
+              }}>
                 <span className={styles.arrows}>»</span> VISIT OUR ATELIER
               </a>
             </div>

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import styles from "./Navbar.module.css";
-import PageTransition, { type PageTransitionHandle } from "./PageTransition";
+import PageTransition, { type PageTransitionHandle, triggerPageTransition } from "./PageTransition";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,11 +50,27 @@ export default function Navbar() {
       <div className={`${styles.menuOverlay} ${menuOpen ? styles.overlayOpen : ''}`}>
         <div className={styles.menuCircle}>
           <ul className={styles.menuList}>
-            <li><a href="#" onClick={() => setMenuOpen(false)}>Home</a></li>
-            <li><a href="#" onClick={() => setMenuOpen(false)}>About Us</a></li>
-            <li><a href="#" onClick={() => setMenuOpen(false)}>Contact</a></li>
-            <li><a href="#" onClick={() => setMenuOpen(false)}>Work</a></li>
-            <li><a href="#" onClick={() => setMenuOpen(false)}>Projects</a></li>
+            {[
+              "Home",
+              "About Us",
+              "Contact",
+              "Work",
+              "Projects",
+            ].map((item) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    await triggerPageTransition();
+                    setMenuOpen(false);
+                    window.scrollTo({ top: 0, behavior: "instant" });
+                  }}
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

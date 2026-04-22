@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./ScrollShowcase.module.css";
+import { triggerPageTransition } from "./PageTransition";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -327,10 +328,18 @@ export default function ScrollShowcase() {
           <div className={styles.centerOverlay}>
             <span className={styles.centerTitle}>Inner Chamber</span>
             <div className={styles.centerNav}>
-              <button className={styles.navArrow} aria-label="Previous project">
+              <button className={styles.navArrow} aria-label="Previous project" onClick={async (e) => {
+                e.preventDefault();
+                await triggerPageTransition();
+                window.scrollTo({ top: 0, behavior: "instant" });
+              }}>
                 ←
               </button>
-              <button className={styles.navArrow} aria-label="Next project">
+              <button className={styles.navArrow} aria-label="Next project" onClick={async (e) => {
+                e.preventDefault();
+                await triggerPageTransition();
+                window.scrollTo({ top: 0, behavior: "instant" });
+              }}>
                 →
               </button>
             </div>
