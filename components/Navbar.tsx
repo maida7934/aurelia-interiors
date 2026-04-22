@@ -1,15 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import styles from "./Navbar.module.css";
+import PageTransition, { type PageTransitionHandle } from "./PageTransition";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const transitionRef = useRef<PageTransitionHandle>(null);
+
+  const handleBrandClick = useCallback(async () => {
+    // Fire the tile transition
+    if (transitionRef.current) {
+      await transitionRef.current.play();
+    }
+
+    // Scroll to top (hero section) — instant so user doesn't see movement behind tiles
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
 
   return (
     <>
       <nav className={styles.navbar}>
-        <div className={styles.navBrand}>
+        <div
+          className={styles.navBrand}
+          onClick={handleBrandClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") handleBrandClick();
+          }}
+        >
           <span className={styles.brandAurelia}>Aurelia</span>
           <span className={styles.brandInteriors}>Interiors</span>
         </div>
@@ -38,6 +58,9 @@ export default function Navbar() {
           </ul>
         </div>
       </div>
+
+      {/* ── Page Transition Overlay ── */}
+      <PageTransition ref={transitionRef} />
     </>
   );
 }

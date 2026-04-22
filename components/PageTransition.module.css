@@ -1,0 +1,140 @@
+/* ================================================================
+   PAGE TRANSITION — 5-tile curtain with centred brand text
+   ================================================================ */
+.loader {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100vh;
+  pointer-events: none;
+  transition: width 0s 1.4s ease;
+}
+
+/* ── Brand text (replaces spinner) ───────────────────────────── */
+.loaderBrand {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.brandAurelia {
+  font-family: 'Alex Brush', cursive;
+  font-size: 4.2rem;
+  color: #F1EADE;
+  line-height: 0.94;
+  letter-spacing: 0.01em;
+  display: block;
+}
+
+.brandInteriors {
+  font-family: 'Cormorant Garamond', serif;
+  font-optical-sizing: auto;
+  font-size: 0.92rem;
+  font-weight: 400;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: rgba(241, 234, 222, 0.65);
+  margin-top: 6px;
+  display: block;
+}
+
+/* ── Individual tile ─────────────────────────────────────────── */
+.tile {
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 20%;
+  background-color: #776859;
+  transition: width 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.tile:nth-child(2) {
+  top: 0;
+}
+
+.tile:nth-child(3) {
+  top: 20%;
+}
+
+.tile:nth-child(4) {
+  top: 40%;
+}
+
+.tile:nth-child(5) {
+  top: 60%;
+}
+
+.tile:nth-child(6) {
+  top: 80%;
+}
+
+/* ── Retract delays (reversed — top tile retracts first) ─────── */
+.tile:nth-child(2) {
+  transition-delay: 0.6s;
+}
+
+.tile:nth-child(3) {
+  transition-delay: 0.45s;
+}
+
+.tile:nth-child(4) {
+  transition-delay: 0.3s;
+}
+
+.tile:nth-child(5) {
+  transition-delay: 0.15s;
+}
+
+.tile:nth-child(6) {
+  transition-delay: 0s;
+}
+
+/* ================================================================
+   ACTIVE STATE — tiles expand, brand fades in
+   ================================================================ */
+.loaderActive {
+  width: 100%;
+  pointer-events: all;
+  transition-delay: 0s;
+}
+
+.loaderActive .loaderBrand {
+  opacity: 1;
+  transition: opacity 0.5s 1.0s ease;
+}
+
+.loaderActive .tile {
+  width: 100%;
+}
+
+/* Stagger delays for expand (top tile first) */
+.loaderActive .tile:nth-child(2) {
+  transition-delay: 0s;
+}
+
+.loaderActive .tile:nth-child(3) {
+  transition-delay: 0.15s;
+}
+
+.loaderActive .tile:nth-child(4) {
+  transition-delay: 0.3s;
+}
+
+.loaderActive .tile:nth-child(5) {
+  transition-delay: 0.45s;
+}
+
+.loaderActive .tile:nth-child(6) {
+  transition-delay: 0.6s;
+}
