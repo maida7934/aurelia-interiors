@@ -52,6 +52,7 @@ export default function StudioSection() {
   const textRef = useRef<HTMLParagraphElement>(null);
   const box4ContainerRef = useRef<HTMLDivElement>(null);
   const box4ImgRef = useRef<HTMLImageElement>(null);
+  const smallImgRefs = useRef<(HTMLImageElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -90,7 +91,34 @@ export default function StudioSection() {
       }
     }, sectionRef);
 
-    return () => ctx.revert();
+    // ── Mouse-follow depth effect for small box images ──────────
+    const imgs = smallImgRefs.current.filter(Boolean) as HTMLImageElement[];
+    const STRENGTH = 15; // max px the image can shift
+
+    function handleMouseMove(e: MouseEvent) {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      // Normalised mouse position: -1 to +1 from centre
+      const mx = (e.clientX / vw - 0.5) * 2;
+      const my = (e.clientY / vh - 0.5) * 2;
+
+      imgs.forEach((img) => {
+        gsap.to(img, {
+          x: mx * STRENGTH,
+          y: my * STRENGTH,
+          duration: 0.8,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      });
+    }
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      ctx.revert();
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   return (
@@ -115,7 +143,7 @@ export default function StudioSection() {
 
         {/* ── Boxes ── */}
         <div className={styles.boxesContainer}>
-          {BOX_CONTENT.map((box) => (
+          {BOX_CONTENT.map((box, boxIdx) => (
             <div
               key={box.id}
               ref={box.image ? box4ContainerRef : undefined}
@@ -142,7 +170,13 @@ export default function StudioSection() {
                 <>
                   {box.imgSrc && (
                     <div className={styles.smallBoxImageWrap}>
-                      <img src={box.imgSrc} alt="" className={styles.smallBoxImg} draggable={false} />
+                      <img
+                        ref={(el) => { smallImgRefs.current[boxIdx] = el; }}
+                        src={box.imgSrc}
+                        alt=""
+                        className={styles.smallBoxImg}
+                        draggable={false}
+                      />
                     </div>
                   )}
                   <p className={styles.boxText}>{box.text}</p>

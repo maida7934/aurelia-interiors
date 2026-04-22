@@ -261,12 +261,12 @@ export default function OriginObjectsSection() {
       if (cur !== prevCardIdx) {
         descTexts.forEach((span, i) => {
           if (i === cur) {
-            gsap.to(span, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" });
+            gsap.to(span, { opacity: 1, y: 0, duration: 0.4, delay: 0.2, ease: "power2.out" });
           } else {
             gsap.to(span, {
               opacity: 0,
               y: i < cur ? -14 : 14,
-              duration: 0.45,
+              duration: 0.2,
               ease: "power2.in",
             });
           }

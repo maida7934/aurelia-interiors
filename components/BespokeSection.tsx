@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function BespokeSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const revealRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const bespokeImgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -46,8 +47,31 @@ export default function BespokeSection() {
       once: true,
     });
 
+    // ── Mouse-follow depth effect for the bespoke image ─────────
+    const img = bespokeImgRef.current;
+    const STRENGTH = 18; // max px shift
+
+    function handleMouseMove(e: MouseEvent) {
+      if (!img) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const mx = (e.clientX / vw - 0.5) * 2;
+      const my = (e.clientY / vh - 0.5) * 2;
+
+      gsap.to(img, {
+        x: mx * STRENGTH,
+        y: my * STRENGTH,
+        duration: 0.8,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    }
+
+    window.addEventListener("mousemove", handleMouseMove);
+
     return () => {
       st.kill();
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
@@ -63,6 +87,7 @@ export default function BespokeSection() {
           >
             <div className={styles.revealInner}>
               <img
+                ref={bespokeImgRef}
                 src="/design6.jpeg"
                 alt="Aurelia Bespoke"
                 className={styles.image}
