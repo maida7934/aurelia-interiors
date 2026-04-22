@@ -84,10 +84,10 @@ export default function OriginObjectsSection() {
       const vw = window.innerWidth;
       const maxSize = vw * 0.13;
       // Temporarily set to max size to measure
-      wL.style.fontSize = `${maxSize}px`;
-      wR.style.fontSize = `${maxSize}px`;
-      wLWidthAtMax = wL.offsetWidth;
-      wRWidthAtMax = wR.offsetWidth;
+      wL!.style.fontSize = `${maxSize}px`;
+      wR!.style.fontSize = `${maxSize}px`;
+      wLWidthAtMax = wL!.offsetWidth;
+      wRWidthAtMax = wR!.offsetWidth;
     }
     measureWords();
 
@@ -134,8 +134,8 @@ export default function OriginObjectsSection() {
       const fontSize = lerp(maxFs, minFs, e1);
 
       // Apply font size without touching position
-      wL.style.fontSize = `${fontSize}px`;
-      wR.style.fontSize = `${fontSize}px`;
+      wL!.style.fontSize = `${fontSize}px`;
+      wR!.style.fontSize = `${fontSize}px`;
 
       // ── Word position via transform only — STABLE, no jitter ──
       // Both words share left:50% (= cx) as their CSS anchor point.
@@ -144,8 +144,8 @@ export default function OriginObjectsSection() {
       // At e1=1:  each word has been pushed outward by wordPush, reaching the edges.
       const wordPush = e1 * vw * 0.30;
 
-      const wLW = wL.offsetWidth;   // current rendered width (shrinks with fontSize)
-      const wRW = wR.offsetWidth;
+      const wLW = wL!.offsetWidth;   // current rendered width (shrinks with fontSize)
+      const wRW = wR!.offsetWidth;
 
       // Left word: anchor is left:50% = cx (left edge of element at cx by default).
       // We want its RIGHT edge at (cx - wordPush).
@@ -157,8 +157,8 @@ export default function OriginObjectsSection() {
       // Left edge is already at cx (transform origin), so translateX = +wordPush.
       const txR = wordPush;
 
-      wL.style.transform = `translate(${txL}px, -50%)`;
-      wR.style.transform = `translate(${txR}px, -50%)`;
+      wL!.style.transform = `translate(${txL}px, -50%)`;
+      wR!.style.transform = `translate(${txR}px, -50%)`;
 
       // ── Inline cards ────────────────────────────────────────────
       const CARD_W = clamp(vw * 0.115, 100, 150);
@@ -227,11 +227,11 @@ export default function OriginObjectsSection() {
       const fadeOut = eio(norm(p, GATHER_START, GATHER_END));
       const fadeIn = eio(norm(p, P2_FADE_START, P2_FADE_END));
 
-      splitStage.style.opacity = String(1 - fadeOut);
-      splitStage.style.pointerEvents = fadeOut < 0.95 ? "auto" : "none";
+      splitStage!.style.opacity = String(1 - fadeOut);
+      splitStage!.style.pointerEvents = fadeOut < 0.95 ? "auto" : "none";
 
-      cardsStage.style.opacity = String(fadeIn);
-      cardsStage.style.pointerEvents = fadeIn > 0.05 ? "auto" : "none";
+      cardsStage!.style.opacity = String(fadeIn);
+      cardsStage!.style.pointerEvents = fadeIn > 0.05 ? "auto" : "none";
     }
 
     /* ════════════════════════════════════════════════════

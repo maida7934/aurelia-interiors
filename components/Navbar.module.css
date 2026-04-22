@@ -67,6 +67,7 @@
   transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.3s;
   outline: none;
   pointer-events: all;
+  z-index: 1001; /* Keep above overlay */
 }
 
 .menuBtn:hover {
@@ -87,25 +88,118 @@
   height: 1.5px;
   background: var(--nav-color, #140c01);
   border-radius: 1px;
-  transition: transform 0.3s, background 0.5s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
 }
 
-.menuBtn:hover .menuLine:first-child {
+.menuBtn:hover .menuLine:first-child:not(.openLine1) {
   transform: scaleX(0.72);
   transform-origin: left;
 }
 
-.menuBtn:hover .menuLine:last-child {
+.menuBtn:hover .menuLine:last-child:not(.openLine2) {
   transform: scaleX(0.72);
   transform-origin: right;
+}
+
+/* Menu Button Open States */
+.openLine1 {
+  transform: translateY(3.25px) rotate(45deg) !important;
+}
+.openLine2 {
+  transform: translateY(-3.25px) rotate(-45deg) !important;
 }
 
 .menuLabel {
   font-family: 'Cormorant Garamond', serif;
   font-size: 0.68rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.24em;
   color: var(--nav-color, #140c01);
   text-transform: uppercase;
   transition: color 0.5s ease;
+  width: 40px; /* fixed width to prevent jitter when text changes */
+  text-align: left;
+}
+
+/* ================================================================
+   MENU OVERLAY
+   ================================================================ */
+.menuOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999; /* Below navbar (1000) but above everything else */
+  background: rgba(26, 23, 20, 0.5); /* Dark tint */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.overlayOpen {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Faded & Scattered Grainy Orb */
+.menuCircle {
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle, rgba(241, 234, 222, 0.95) 0%, rgba(241, 234, 222, 0.4) 50%, rgba(241, 234, 222, 0) 75%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.25'/%3E%3C/svg%3E");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.85);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.overlayOpen .menuCircle {
+  transform: scale(1);
+}
+
+/* Menu List */
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+.menuList li a {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  font-weight: 400;
+  color: #1a1714;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block; /* Required for transform */
+}
+
+.menuList li a:hover {
+  color: #cda877;
+  transform: scale(1.08);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .menuCircle {
+    width: 350px;
+    height: 350px;
+  }
+  
+  .menuList li a {
+    font-size: 2.2rem;
+    gap: 1.2rem;
+  }
 }
