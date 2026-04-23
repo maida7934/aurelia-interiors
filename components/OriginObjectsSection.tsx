@@ -366,7 +366,7 @@ export default function OriginObjectsSection() {
 
         {/* ── Phase 1 ── */}
         <div ref={splitStageRef} className={styles.splitStage}>
-          <span ref={wLRef} className={styles.word}>Origin</span>
+          <span ref={wLRef} className={styles.word} style={{ transform: "translate(-100%, -50%)", fontSize: "13vw" }}>Origin</span>
 
           {[0, 1, 2, 3].map((i) => (
             <div
@@ -378,7 +378,7 @@ export default function OriginObjectsSection() {
             </div>
           ))}
 
-          <span ref={wRRef} className={styles.word}>Objects</span>
+          <span ref={wRRef} className={styles.word} style={{ transform: "translate(0%, -50%)", fontSize: "13vw" }}>Objects</span>
         </div>
 
         {/* ── Phase 2 ── */}
