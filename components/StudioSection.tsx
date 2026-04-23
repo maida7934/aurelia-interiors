@@ -54,6 +54,7 @@ export default function StudioSection() {
   const box4ContainerRef = useRef<HTMLDivElement>(null);
   const box4ImgRef = useRef<HTMLImageElement>(null);
   const smallImgRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const boxRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -72,6 +73,26 @@ export default function StudioSection() {
           },
         }
       );
+
+      // Floating boxes parallax
+      const boxes = boxRefs.current.filter(Boolean) as HTMLDivElement[];
+      boxes.forEach((box, i) => {
+        const speed = i % 2 === 0 ? 35 : 55; // Subtle varied speed
+        gsap.fromTo(
+          box,
+          { y: speed },
+          {
+            y: -speed,
+            ease: "none",
+            scrollTrigger: {
+              trigger: box,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          }
+        );
+      });
 
       // Box 4 — image parallax scroll
       if (box4ImgRef.current && box4ContainerRef.current) {
@@ -151,7 +172,12 @@ export default function StudioSection() {
           {BOX_CONTENT.map((box, boxIdx) => (
             <div
               key={box.id}
-              ref={box.image ? box4ContainerRef : undefined}
+              ref={(el) => {
+                boxRefs.current[boxIdx] = el;
+                if (box.image && box4ContainerRef) {
+                  box4ContainerRef.current = el;
+                }
+              }}
               className={`${styles.box} ${styles[`box${box.id}`]}`}
             >
               {/* Circled number */}
