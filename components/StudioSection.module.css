@@ -244,50 +244,88 @@
 }
 
 /* ── Individual Box Adjustments ── */
-/* You can now adjust widths, heights, margins, overrides, and placements for each individual box below */
+/* Desktop layout (>1024px) */
+@media (min-width: 1025px) {
+  .box1 {
+    width: 370px;
+    height: 300px;
+    align-items: center;
+  }
 
-.box1 {
-  /* Example: margin-right: 10rem; */
-  width: 370px;
-  height: 300px;
-  align-items: center;
+  .box2 {
+    width: 370px;
+    height: 300px;
+    margin-top: -4rem;
+    right: 35%;
+    z-index: 2;
+  }
+
+  .box3 {
+    width: 370px;
+    height: 300px;
+    margin-top: -15rem;
+    z-index: 3;
+  }
+
+  .box4 {
+    width: 370px;
+    height: 300px;
+    right: 32%;
+  }
+
+  .box5 {
+    width: 370px;
+    height: 300px;
+    margin-top: calc(-300px - 2rem);
+    left: 29%;
+  }
+
+  .box6 {
+    width: 370px;
+    height: 300px;
+  }
 }
 
-.box2 {
-  width: 370px;
-  height: 300px;
-  margin-top: -4rem;
-  right: 35%;
-  /* Pulls it slightly above into box1 */
-
-  z-index: 2;
+/* Tablet layout (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .boxesContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    gap: 3rem;
+  }
+  
+  .box {
+    width: 100%;
+    max-width: 370px;
+    margin: 0 !important;
+    left: auto !important;
+    right: auto !important;
+  }
 }
 
-.box3 {
-  width: 370px;
-  height: 300px;
-  margin-top: -15rem;
-  z-index: 3;
-}
+/* Mobile layout (<768px) */
+@media (max-width: 767px) {
+  .boxesContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 2rem;
+  }
+  
+  .box {
+    width: 100%;
+    max-width: 370px;
+    margin: 0 !important;
+    left: auto !important;
+    right: auto !important;
+  }
 
-.box4 {
-  width: 370px;
-  height: 300px;
-  right: 32%;
-  /* Places it on the left */
-}
-
-.box5 {
-  width: 370px;
-  height: 300px;
-  /* Pull it up so it sits precisely on the exact same row as box 4 */
-  margin-top: calc(-300px - 2rem);
-  left: 29%;
-  /* Places it symmetrically on the right */
-}
-
-.box6 {
-  width: 370px;
-  height: 300px;
-  /* Adjust margins or placement as needed */
+  .boxText {
+    font-size: 16px;
+  }
+  
+  .paragraphText {
+    font-size: 16px;
+  }
 }
